@@ -23,6 +23,9 @@ struct vc2 {
 
 int main(int argc, char** argv) {
 	string path(argv[1]);
+	string name(argv[2]);
+	string outPath(argv[3]);
+	path = path + name + ".jpg";
 
 	int iw, ih, n;
 	unsigned char* im = stbi_load(path.c_str(), &iw, &ih, &n, 0);
@@ -44,8 +47,8 @@ int main(int argc, char** argv) {
 
 	int len = bw * bh * n;
 
-	cout << bw << "\t" << bh << "\t" << n << endl;
-	cout << len << endl;
+	// cout << bw << "\t" << bh << "\t" << n << endl;
+	// cout << len << endl;
 
 	unsigned char* im0 = NULL;
 	unsigned char* im1 = NULL;
@@ -57,19 +60,13 @@ int main(int argc, char** argv) {
 	alloc(im2, len);
 	alloc(im3, len);
 
-	cout << "Processing 0" << endl;
+	cout << "Processing..." << endl;
 
 	int count = 0;
 	for (int i = 0; i < ih; i ++) {
 		for (int j = 0; j < iw; j ++) {
 			for (int k = 0; k < n; k ++) {
 				if (i >= a0.uy && i < a0.dy && j >= a0.ux && j < a0.dx) {
-					// if (count >= len) {
-					// 	cout << count << "\t"
-					// 		 << i << "\t"
-					// 		 << j << "\t"
-					// 		 << k << endl;
-					// }
 					int tmp = (i * iw + j) * n + k;
 					im0[count] = im[tmp];
 					count ++;
@@ -78,7 +75,6 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	cout << "Processing 1" << endl;
 	count = 0;
 	for (int i = 0; i < ih; i ++) {
 		for (int j = 0; j < iw; j ++) {
@@ -91,7 +87,6 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	cout << "Processing 2" << endl;
 	count = 0;
 	for (int i = 0; i < ih; i ++) {
 		for (int j = 0; j < iw; j ++) {
@@ -104,7 +99,6 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	cout << "Processing 3" << endl;
 	count = 0;
 	for (int i = 0; i < ih; i ++) {
 		for (int j = 0; j < iw; j ++) {
@@ -118,10 +112,15 @@ int main(int argc, char** argv) {
 	}
 
 	cout << "saving..." << endl;
-	stbi_write_png("im0.png", bw, bh, n, im0, 0);
-	stbi_write_png("im1.png", bw, bh, n, im1, 0);
-	stbi_write_png("im2.png", bw, bh, n, im2, 0);
-	stbi_write_png("im3.png", bw, bh, n, im3, 0);
+	path = outPath + name + "_0.png";
+	stbi_write_png(path.c_str(), bw, bh, n, im0, 0);
+	path = outPath + name + "_1.png";
+	stbi_write_png(path.c_str(), bw, bh, n, im1, 0);
+	path = outPath + name + "_2.png";
+	stbi_write_png(path.c_str(), bw, bh, n, im2, 0);
+	path = outPath + name + "_3.png";
+	stbi_write_png(path.c_str(), bw, bh, n, im3, 0);
+	cout << path << endl;
 
 	cout << "free" << endl;
 	stbi_image_free(im);
