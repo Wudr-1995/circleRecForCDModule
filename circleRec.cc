@@ -43,19 +43,37 @@ int main(int argc, char** argv) {
 	erode(src, src, kernel);
 	// medianBlur(src,src,3);
 
-	vector<Vec3f> circles;
-	HoughCircles(src, circles, CV_HOUGH_GRADIENT, 1, 15, 20, 15, 5, 40);
+	vector<Vec3f> circles0;
+	vector<Vec3f> circles1;
+	vector<Vec4i> lines;
+	HoughLinesP(src, lines, 1, CV_PI / 180, 80, 20, 10);
+	HoughCircles(src, circles0, CV_HOUGH_GRADIENT, 1, 50, 20, 15, 9, 14);
+	HoughCircles(src, circles1, CV_HOUGH_GRADIENT, 1, 50, 40, 15, 30, 40);
 	vector<coor> circs;
 
 	cvtColor(src, src, CV_GRAY2RGB);
-	for (int i = 0; i < circles.size(); i ++) {
-		Vec3f c = circles[i];
+	for (int i = 0; i < circles0.size(); i ++) {
+		Vec3f c = circles0[i];
 		// cout << "(" << c[0] << ", " << c[1] << ")" << endl;
 		// cout << c[2] << endl;
 		circle(src, Point(c[0], c[1]), c[2], Scalar(0,255,255), 3, CV_AA);
 		coor tmp(c[0], c[1], c[2], true);
 		circs.push_back(tmp);
 	}
+
+	for (int i = 0; i < circles1.size(); i ++) {
+		Vec3f c = circles1[i];
+		// cout << "(" << c[0] << ", " << c[1] << ")" << endl;
+		// cout << c[2] << endl;
+		circle(src, Point(c[0], c[1]), c[2], Scalar(0,255,255), 3, CV_AA);
+		coor tmp(c[0], c[1], c[2], true);
+		circs.push_back(tmp);
+	}
+
+	// for (int i = 0; i < lines.size(); i ++) {
+	// 	Vec4i p = lines[i];
+	// 	line(src, Point(p[0], p[1]), Point(p[2], p[3]), Scalar(0, 255, 255), 3, CV_AA);
+	// }
 
 	sort(circs.begin(), circs.end(), [](coor a, coor b){return a.x < b.x;});
 
@@ -75,22 +93,22 @@ int main(int argc, char** argv) {
 			ccount ++;
 	}
 
-	cout << cc << "\t"
-		 << lc << "\t"
-		 << rc << endl;
+	// cout << cc << "\t"
+	// 	 << lc << "\t"
+	// 	 << rc << endl;
 
 	if (!cc && (lc || rc)) {
 		for (int i = 0; i < circs.size(); i ++) {
 			coor tmp = circs[i];
-			cout << tmp.x << endl;
+			// cout << tmp.x << endl;
 			if (tmp.x < 380 || tmp.x > 1100) {
-				cout << "Remove" << endl;
+				// cout << "Remove" << endl;
 				circs[i].t = false;
 			}
 		}
 	}
 
-	if (!ccount && !(lc || rc)) {
+	if (!ccount && !(lc || rc) && !lines.size()) {
 		s = false;
 	}
 

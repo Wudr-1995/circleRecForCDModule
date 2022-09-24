@@ -30,18 +30,27 @@ int main(int argc, char** argv) {
 	int iw, ih, n;
 	unsigned char* im = stbi_load(path.c_str(), &iw, &ih, &n, 0);
 
-	int bw = 1350;
-	int bh = 240;
+	int bw = 1330;
+	int bh = 300;
+
+	// int bw = 1350;
+	// int bh = 240;
 
 	vc2 a0, a1, a2, a3;
 
-	a0.ux = 210; a0.uy = 640;
-	a0.dx = a0.ux + bw; a0.dy = a0.uy + bh;
-	a1.ux = 1800; a1.uy = 640;
-	a1.dx = a1.ux + bw; a1.dy = a1.uy + bh;
-	a2.ux = 210; a2.uy = 2640;
-	a2.dx = a2.ux + bw; a2.dy = a2.uy + bh;
+	a0.ux = 270; a0.uy = 740;
+	a1.ux = 1800; a1.uy = 740;
+	a2.ux = 270; a2.uy = 2640;
 	a3.ux = 1800; a3.uy = 2640;
+
+	// a0.ux = 210; a0.uy = 640;
+	// a1.ux = 1800; a1.uy = 640;
+	// a2.ux = 210; a2.uy = 2640;
+	// a3.ux = 1800; a3.uy = 2640;
+
+	a0.dx = a0.ux + bw; a0.dy = a0.uy + bh;
+	a1.dx = a1.ux + bw; a1.dy = a1.uy + bh;
+	a2.dx = a2.ux + bw; a2.dy = a2.uy + bh;
 	a3.dx = a3.ux + bw; a3.dy = a3.uy + bh;
 
 
