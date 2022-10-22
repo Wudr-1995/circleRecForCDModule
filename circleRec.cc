@@ -3,6 +3,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/types_c.h>
 #include <opencv2/highgui/highgui_c.h>
+#include <opencv2/core/core.hpp>
 
 using namespace cv;
 using namespace std;
@@ -23,6 +24,7 @@ int main(int argc, char** argv) {
 	bool s = true;
 
 	path = path + name + ".png";
+	cout << path << endl;
 
 	Mat src;
 	src = imread(path.c_str());
@@ -40,16 +42,43 @@ int main(int argc, char** argv) {
 
 	// cvtColor(src, src, CV_RGB2GRAY);
 	threshold(src, src, 125, 255, THRESH_BINARY_INV);
-	erode(src, src, kernel);
+	// erode(src, src, kernel);
 	// medianBlur(src,src,3);
 
 	vector<Vec3f> circles0;
+	vector<Vec3f> circles00;
 	vector<Vec3f> circles1;
 	vector<Vec4i> lines;
+
+	int h = src.rows;
+	int w = src.cols;
+	// cout << h << "\t"
+	// 	 << w << endl;
+	cv::Rect select0, select1;
+
+	// select0 = Rect(0, 0, w - 1, h / 2);
+	// select1 = Rect(0, h / 2, w - 1, h - 1);
+
+	// select0 = Rect(0, 0, 1329, 150);
+	// select1 = Rect(0, 0, 200, 200);
+
+	Mat ROI0 = src.rowRange(0, 150).clone();
+	Mat ROI1 = src.rowRange(151, 299).clone();
+
+	// Mat ROI0 = src(select0);
+	// Mat ROI1 = src(select1);
+
+	// cout << "Processing..." << endl;
+
 	HoughLinesP(src, lines, 1, CV_PI / 180, 80, 20, 10);
-	HoughCircles(src, circles0, CV_HOUGH_GRADIENT, 1, 50, 20, 15, 9, 14);
-	HoughCircles(src, circles1, CV_HOUGH_GRADIENT, 1, 50, 40, 15, 30, 40);
+	HoughCircles(ROI0, circles0, CV_HOUGH_GRADIENT, 1, 60, 20, 15, 9, 14);
+	HoughCircles(ROI1, circles00, CV_HOUGH_GRADIENT, 1, 60, 20, 15, 9, 14);
+	HoughCircles(src, circles1, CV_HOUGH_GRADIENT, 1, 60, 40, 15, 30, 40);
 	vector<coor> circs;
+	// cout << "sizes: " << endl
+	// 	 << circles0.size() << "\t"
+	// 	 << circles00.size() << "\t"
+	// 	 << circles1.size() << endl;
 
 	cvtColor(src, src, CV_GRAY2RGB);
 	for (int i = 0; i < circles0.size(); i ++) {
@@ -57,6 +86,13 @@ int main(int argc, char** argv) {
 		// cout << "(" << c[0] << ", " << c[1] << ")" << endl;
 		// cout << c[2] << endl;
 		circle(src, Point(c[0], c[1]), c[2], Scalar(0,255,255), 3, CV_AA);
+		coor tmp(c[0], c[1], c[2], true);
+		circs.push_back(tmp);
+	}
+
+	for (int i = 0; i < circles00.size(); i ++) {
+		Vec3f c = circles00[i];
+		circle(src, Point(c[0], c[1] + 150), c[2], Scalar(0,255,255), 3, CV_AA);
 		coor tmp(c[0], c[1], c[2], true);
 		circs.push_back(tmp);
 	}
@@ -117,7 +153,7 @@ int main(int argc, char** argv) {
 	double lastX = 0;
 	int code = 0;
 	code ++;
-	code << 1;
+	// code << 1;
 	for (int i = 0; i < circs.size(); i ++) {
 		coor tmp = circs[i];
 		if (!tmp.t)
@@ -128,7 +164,7 @@ int main(int argc, char** argv) {
 		else {
 			sCount ++;
 		}
-		if (lastX && tmp.x - lastX < 4) {
+		if (lastX && tmp.x - lastX < 8) {
 			lastX = tmp.x;
 			continue;
 		}
@@ -144,13 +180,57 @@ int main(int argc, char** argv) {
 		}
 	}
 
+	int thrCode = 1;
+	int quaCode = 1;
+	lastX = 0;
+	double lastY;
+	int sLast = 0;
+
+	for (int i = 0; i < circs.size(); i ++) {
+		coor tmp = circs[i];
+		if (!tmp.t)
+			continue;
+		if (tmp.r < 20) {
+			sLast ++;
+		}
+		else {
+			if (sLast == 2) {
+				quaCode = (quaCode * 4 + 3) * 4;
+			}
+			else if (sLast == 1) {
+				if (lastY < tmp.y) {
+					quaCode = (quaCode * 4 + 1) * 4;
+				}
+				else {
+					quaCode = (quaCode * 4 + 2) * 4;
+				}
+			}
+			else {
+				quaCode *= 4;
+			}
+			sLast = 0;
+		}
+		lastX = tmp.x;
+		lastY = tmp.y;
+	}
+	if (sLast == 1) {
+		if (lastY < circs[circs.size() - 1].y)
+			quaCode = quaCode * 4 + 1;
+		else
+			quaCode = quaCode * 4 + 2;
+	}
+	else if (sLast == 2)
+		quaCode = quaCode * 4 + 3;
+
 	// clog << circles.size() << " in total." << endl;
 
 	ofstream outFile("./stat", std::ios::app);
 	if (s) {
-		outFile << sCount << "\t"
+		outFile << name << "\t"
+				<< sCount << "\t"
 				<< lCount << "\t"
-				<< code << endl;
+				<< code << "\t"
+				<< quaCode << endl;
 		path = outPath + name + ".png";
 		imwrite(path.c_str(), src);
 	}
