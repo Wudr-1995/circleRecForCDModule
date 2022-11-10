@@ -6,16 +6,19 @@ using namespace std;
 int main(void) {
 	ifstream inFile("./stat");
 	ofstream outFile("./finalStat");
-	int sc, lc, code;
+	int sc, lc, code0, code1;
+	string tmp;
 	while (inFile.good()) {
-		inFile >> sc >> lc >> code;
+		inFile >> tmp >> sc >> lc >> code0 >> code1;
 		if (!inFile.good())
 			break;
 		if (!sc && !lc)
 			continue;
-		outFile << sc << "\t"
+		outFile << tmp << "\t"
+				<< sc << "\t"
 				<< lc << "\t"
-				<< code << endl;
+				<< code0 << "\t"
+				<< code1 << endl;
 	}
 	inFile.close();
 	outFile.close();

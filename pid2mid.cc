@@ -49,14 +49,14 @@ int getLpmtOrd(string entry) {
 
 string genPID(string NoS, int floor, int nOrd) {
 	string res = NoS;
-	string floorId("000");
+	string floorId("00");
 	string ord("000");
 	if (floor < 10) {
-		floorId[2] += floor;
+		floorId[1] += floor;
 	}
 	else {
-		floorId[2] += floor % 10;
-		floorId[1] += floor / 10;
+		floorId[1] += floor % 10;
+		floorId[0] += floor / 10;
 	}
 	floorId = floorId + "-";
 
@@ -113,7 +113,10 @@ void decode(int code, string modId, vector<HOLE>& holes, int ns) {
 }
 
 int getPMTIndex(vector<HOLE>& holes, int floor, int ord, int pmtOrd) {
-	int tmpOrd = 0;
+	cout << floor << "\t"
+		 << ord << "\t"
+		 << pmtOrd << endl;
+	int tmpOrd = 1;
 	int entOrd;
 	int len = holes.size();
 	for (int i = 0; i < len; i ++) {
@@ -132,7 +135,7 @@ int getPMTIndex(vector<HOLE>& holes, int floor, int ord, int pmtOrd) {
 
 int main(void) {
 	ifstream idFile("./modules");
-	ifstream recoFile("./stat");
+	ifstream recoFile("./NorthRecoResult");
 	ifstream firstMid("./entries");
 
 	string nan;
@@ -151,6 +154,7 @@ int main(void) {
 
 	ofstream p2m("./NorthPID2MID");
 	ofstream ck("checkResult");
+	ofstream lpmtP2m("./NorthLPMTPID2MID");
 
 	while (idFile.good()) {
 		FLOOR floor;
@@ -205,6 +209,7 @@ int main(void) {
 				   floors[i].modules[j].ns);
 		}
 
+		// cout << getOrder(floors[i].entry) << "\t" << getLpmtOrd(floors[i].entry) << endl;
 		int st = getPMTIndex(holes, floors[i].floor,
 							 getOrder(floors[i].entry),
 							 getLpmtOrd(floors[i].entry));
@@ -270,6 +275,7 @@ int main(void) {
 					holes[j].mid.push_back(mid);
 				}
 			}
+			lastMod = holes[j].mod;
 		}
 
 		cout << nHoles << endl;
@@ -282,16 +288,16 @@ int main(void) {
 				string pid = holes[index].pid[0];
 				pid = pid + ".5";
 				if (holes[j].n == 2) {
-					string pid0 = pid + "U";
-					string pid1 = pid + "D";
+					string pid0 = pid + "-U";
+					string pid1 = pid + "-D";
 					holes[j].pid.push_back(pid0);
 					holes[j].pid.push_back(pid1);
 				}
 				else {
 					if (holes[j].uod)
-						pid = pid + "U";
+						pid = pid + "-U";
 					else
-						pid = pid + "D";
+						pid = pid + "-D";
 					holes[j].pid.push_back(pid);
 				}
 			}
@@ -306,6 +312,9 @@ int main(void) {
 				else
 					p2m << getLayer(holes[j].mod) << "\t" << holes[j].mid[0] << "\t" << holes[j].pid[0] << endl;
 			}
+			else {
+				lpmtP2m << getLayer(holes[j].mod) << "\t" << holes[j].mod << "\t" << holes[j].pid[0] << endl;
+			}
 		}
 	}
 
@@ -316,6 +325,7 @@ int main(void) {
 	firstMid.close();
 	p2m.close();
 	ck.close();
+	lpmtP2m.close();
 
 	return 1;
 }

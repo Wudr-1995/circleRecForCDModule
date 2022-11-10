@@ -137,7 +137,7 @@ int main(int argc, char** argv) {
 		for (int i = 0; i < circs.size(); i ++) {
 			coor tmp = circs[i];
 			// cout << tmp.x << endl;
-			if (tmp.x < 380 || tmp.x > 1100) {
+			if ((tmp.x < 380 || tmp.x > 1100) && circs[i].r < 25) {
 				// cout << "Remove" << endl;
 				circs[i].t = false;
 			}
