@@ -30,13 +30,13 @@ string genMID(string NoS, int floor, int nOrd) {
 }
 
 int main(void) {
-	ifstream infile("./entryInFloor");
+	ifstream infile("./southEntryInFloor");
 	string tmp;
 	int count;
 	infile >> tmp;
 	// cout << tmp << endl;
 	while (infile.good()) {
-		if (tmp[0] == 78) {
+		if (tmp[0] == 83) {
 			int ord = 0;
 			infile >> count;
 			// cout << count << endl;
@@ -44,10 +44,10 @@ int main(void) {
 			bool done = false;
 			while (infile.good()) {
 				infile >> tmp;
-				if (tmp[0] == 78)
+				if (tmp[0] == 83)
 					break;
 				int id = stoi(tmp);
-				if (id && !done)
+				if (id != 1 && !done)
 					ord ++;
 				else {
 					done = true;
@@ -58,7 +58,7 @@ int main(void) {
 			}
 			// cout << "out: " << count << "\t" << tmp << "\t" << ord << endl;
 			ord ++;
-			string mid = genMID("GJ-N", count, 1);
+			string mid = genMID("GJ-S", count, 1);
 			mid = mid + "(";
 			mid = mid + to_string(ord);
 			mid = mid + "/";

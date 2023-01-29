@@ -134,9 +134,9 @@ int getPMTIndex(vector<HOLE>& holes, int floor, int ord, int pmtOrd) {
 }
 
 int main(void) {
-	ifstream idFile("./modules");
-	ifstream recoFile("./NorthRecoResult");
-	ifstream firstMid("./entries");
+	ifstream idFile("./southModules");
+	ifstream recoFile("./SorthRecoResult");
+	ifstream firstMid("./southEntries");
 
 	string nan;
 	int ns, nl, code;
@@ -152,9 +152,9 @@ int main(void) {
 	firstMid >> entry;
 	// cout << modId << "\t" << code << endl;
 
-	ofstream p2m("./NorthPID2MID");
-	ofstream ck("checkResult");
-	ofstream lpmtP2m("./NorthLPMTPID2MID");
+	ofstream p2m("./SouthPID2MID");
+	ofstream ck("southCheckResult");
+	ofstream lpmtP2m("./SouthLPMTPID2MID");
 
 	while (idFile.good()) {
 		FLOOR floor;
@@ -219,7 +219,7 @@ int main(void) {
 		int id = 1;
 		for (int j = 0; j < nHoles; j ++) {
 			if (!holes[st].sol) {
-				string pid = genPID("N-", floors[i].floor, id);
+				string pid = genPID("S-", floors[i].floor, id);
 				holes[st].pid.push_back(pid);
 				// cout << "LPMT PID: " << pid << "\t" << id << endl;
 				id ++;
@@ -278,13 +278,17 @@ int main(void) {
 			lastMod = holes[j].mod;
 		}
 
-		cout << nHoles << endl;
+		cout << nHoles << endl
+			 << holes.size() << endl;
+		cout << "Assign the pid to the holes of PMT" << endl;
 		// assign the pid to the holes of SPMT
 		for (int j = 0; j < nHoles; j ++) {
+			cout << j << endl;
 			if (holes[j].sol) {
 				int index = j - 1;
 				if (index < 0)
-					index = nHoles ++;
+					index = -- nHoles;
+				cout << index << endl;
 				string pid = holes[index].pid[0];
 				pid = pid + ".5";
 				if (holes[j].n == 2) {
@@ -303,6 +307,7 @@ int main(void) {
 			}
 		}
 
+		cout << "Output..." << endl;
 		for (int j = 0; j < nHoles; j ++) {
 			if (holes[j].sol) {
 				if (holes[j].n == 2) {
