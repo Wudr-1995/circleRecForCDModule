@@ -8,7 +8,7 @@
 using namespace cv;
 using namespace std;
 
-Mat genTextPart(string mid, string pid, string mop, string cid) {
+Mat genTextPart(string mid, string pid, string mop) {
 	Mat dstImage(400, 475, CV_8UC3, Scalar::all(255));
 	putText(dstImage, "MID:", Point(35, 110), FONT_HERSHEY_TRIPLEX, 1.3, Scalar::all(0), 4, 8, 0);
 	putText(dstImage, mid, Point(35, 180), FONT_HERSHEY_TRIPLEX, 1.3, Scalar::all(0), 4, 8, 0);
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 	vector<string> mcodes;
 	vector<string> pcodes;
 
-	string mid, pid, mcode, cid;
+	string mid, pid, mcode;
 	int nan;
 	while (idFile.good()) {
 		idFile >> mid >> pid;
@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
 		cout << tmpMid << "\t"
 			 << tmpPid << endl;
 
-		Mat text0 = genTextPart(tmpMid, tmpPid, "Module", cid);
+		Mat text0 = genTextPart(tmpMid, tmpPid, "Module");
 		cvtColor(text0, text0, CV_RGB2GRAY);
 
 		cvtColor(codeModule, codeModule, CV_RGB2GRAY);

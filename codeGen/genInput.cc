@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
 	int aimLay = stoi(layer);
 	string outPath = "N" + layer;
 	string name0 = outPath + "/MID_PID.txt";
-	string name1 = outPath + "/codes";
+	string name1 = outPath + "/modInput";
 	cout << name0 << endl;
 
 	string mid, pid;
@@ -19,6 +19,7 @@ int main(int argc, char** argv) {
 	ifstream p2m("./pid2mid");
 	ifstream cableId("./cableId");
 	ofstream outfile(name0);
+	ofstream of(name1);
 
 	map<string, int> p2c;
 	int cid;
@@ -39,16 +40,20 @@ int main(int argc, char** argv) {
 			cout << p2c[bcPid] << endl;
 			if (!p2c[bcPid])
 				continue;
-			outfile << aimLay << "\t"
-					<< mid << "\t"
-					<< pid << "\t"
-					<< p2c[bcPid] << endl;
+			// outfile << aimLay << "\t"
+			// 		<< mid << "\t"
+			// 		<< pid << "\t"
+			// 		<< p2c[bcPid] << endl;
+			outfile << mid << "\t"
+					<< pid << endl;
+			of << "M" << pid << endl;
 		}
 	}
 
 	p2m.close();
 	cableId.close();
 	outfile.close();
+	of.close();
 
 	return 1;
 }
