@@ -1,4 +1,4 @@
-LAYER=43
+LAYER=$1
 mkdir N$LAYER
 
 cd N$LAYER

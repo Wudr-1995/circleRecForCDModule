@@ -134,9 +134,9 @@ int getPMTIndex(vector<HOLE>& holes, int floor, int ord, int pmtOrd) {
 }
 
 int main(void) {
-	ifstream idFile("./north");
-	ifstream recoFile("./NorthRecoResult");
-	ifstream firstMid("./entries");
+	ifstream idFile("./southModules");
+	ifstream recoFile("./SorthRecoResult");
+	ifstream firstMid("./southEntries");
 
 	string nan;
 	int ns, nl, code;
@@ -152,9 +152,9 @@ int main(void) {
 	firstMid >> entry;
 	// cout << modId << "\t" << code << endl;
 
-	ofstream p2m("./NorthPID2MID");
-	ofstream ck("NorthCheckResult");
-	ofstream lpmtP2m("./NorthLPMTPID2MID");
+	ofstream p2m("./check_southPID2MID");
+	ofstream ck("./check_southCheckResult");
+	ofstream lpmtP2m("./check_southLPMTPID2MID");
 
 	while (idFile.good()) {
 		FLOOR floor;
@@ -203,6 +203,8 @@ int main(void) {
 		vector<HOLE> holes;
 
 		for (int j = 0; j < nModules; j ++) {
+			// clog << floors[i].modules[j].code << "\t"
+			// 	 << floors[i].modules[j].id << endl;
 			decode(floors[i].modules[j].code,
 				   floors[i].modules[j].id,
 				   holes,
@@ -219,7 +221,7 @@ int main(void) {
 		int id = 1;
 		for (int j = 0; j < nHoles; j ++) {
 			if (!holes[st].sol) {
-				string pid = genPID("N-", floors[i].floor, id);
+				string pid = genPID("S-", floors[i].floor, id);
 				holes[st].pid.push_back(pid);
 				// cout << "LPMT PID: " << pid << "\t" << id << endl;
 				id ++;
@@ -278,18 +280,19 @@ int main(void) {
 			lastMod = holes[j].mod;
 		}
 
-		cout << nHoles << endl
-			 << holes.size() << endl;
+		// cout << nHoles << endl
+		// 	 << holes.size() << endl;
 		cout << "Assign the pid to the holes of PMT" << endl;
 		// assign the pid to the holes of SPMT
 		for (int j = 0; j < nHoles; j ++) {
-			cout << j << endl;
+			// cout << j << endl;
 			if (holes[j].sol) {
 				int index = j - 1;
 				if (index < 0)
 					index = -- nHoles;
-				cout << index << endl;
+				// cout << index << endl;
 				string pid = holes[index].pid[0];
+				clog << index << "\t" << pid << "\t" << holes[j].mid[0] << endl;
 				pid = pid + ".5";
 				if (holes[j].n == 2) {
 					string pid0 = pid + "-U";

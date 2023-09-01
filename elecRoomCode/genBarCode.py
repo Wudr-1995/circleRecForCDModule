@@ -13,11 +13,13 @@ gcuPre += 'DIRECTION 0,0\nREFERENCE 0,0\n'
 gcuPre += 'OFFSET 0 mm\nSET REWIND OFF\n'
 gcuPre += 'SET PEEL OFF\nSET CUTTER OFF\n'
 gcuPre += 'SET PARTIAL_CUTTER OFF\nSET TEAR ON\n'
-gcuPre += 'CLS\nBARCODE 295,423,"128M",38,0,180,1,2,"!104'
+gcuPre += 'CLS\nBARCODE 355,433,"128M",38,0,180,1,2,"!104'
+cidPre = '"\nBARCODE 235,393,"128M",38,0,180,1,2,"!104'
 
-gcuMid = '"\nTEXT 295,369,"3",180,1,1,"'
+gcuMid = '"\nTEXT 355,383,"3",180,1,1,"'
+cidMid = '"\nTEXT 235,349,"3",180,1,1,"'
 
-gcuSuf = '"\nPRINT 1,1\n'
+Suf = '"\nPRINT 1,1\n'
 
 for i in range(np.size(data, 0)):
 	tmpStr = ''
@@ -30,18 +32,18 @@ for i in range(np.size(data, 0)):
 	tmpStr = tmpStr + data[i, 3]
 	tmpStr = tmpStr + 'S'
 	print(tmpStr)
-	gcu = gcuPre + data[i, 6] + gcuMid + data[i, 6] + gcuSuf
-	cid = gcuPre + tmpStr + gcuMid + tmpStr + gcuSuf
-	print(gcu)
+# 	gcu = gcuPre + data[i, 6] + gcuMid + data[i, 6] + gcuSuf
+	cid = gcuPre + data[i, 6] + cidPre + tmpStr + gcuMid + data[i, 6] + cidMid + tmpStr + Suf
+# 	print(gcu)
 	print(cid)
 
-	gcuOut = open('gcus/' + 'GCU-' + data[i, 4] + '.prn', mode='w')
+# 	gcuOut = open('gcus/' + 'GCU-' + data[i, 4] + '.prn', mode='w')
 	cidOut = open('labels/' + 'Wire-' + data[i, 4] + '.prn', mode='w')
 
-	gcuOut.write(gcu)
+# 	gcuOut.write(gcu)
 	cidOut.write(cid)
 
-	gcuOut.close()
+# 	gcuOut.close()
 	cidOut.close()
 
 # 	code = barcode.generate('code128', tmpStr,

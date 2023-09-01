@@ -344,10 +344,14 @@ int main(void) {
 						break;
 				}
 				outFile << allMatch.bellow2gcu[bellowSn] << "\t"
-						<< allMatch.bellow2abc[bellowSn] << "\t"
-						<< allMatch.bellow2hvsa[bellowSn] << "\t"
-						<< allMatch.bellow2hvsb[bellowSn] << "\t"
-						<< allMatch.bellow2mac[bellowSn] << "\t"
+						<< allMatch.bellow2abc[bellowSn] << "\t";
+				if (i <= 4)
+					outFile << " " << "\t"
+							<< allMatch.bellow2hvsb[bellowSn] << "\t";
+				else
+					outFile << allMatch.bellow2hvsa[bellowSn] << "\t"
+							<< " " << "\t";
+				outFile << allMatch.bellow2mac[bellowSn] << "\t"
 						<< "" << "\t"
 						<< i << "\t"
 						<< allMatch.uwbCnt2cntSn[uwbCnt] << "\t"

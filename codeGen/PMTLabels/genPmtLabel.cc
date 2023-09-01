@@ -83,7 +83,11 @@ int main(int argc, char** argv) {
 		putText(codePMT, "SPMT", Point(340, 50), FONT_HERSHEY_TRIPLEX, 1.5, Scalar::all(0), 4, 8, 0);
 		putText(codePMT, uwb, Point(490, 370), FONT_HERSHEY_TRIPLEX, 1.5, Scalar::all(0), 4, 8, 0);
 
-		mid[11] = '_';
+		for (int i = 0; i < mid.size(); i ++) {
+			if (mid[i] == 47)
+				mid[i] = '_';
+		}
+		// mid[11] = '_';
 		pcode = path + "resPMT/S" + mid;
 		pcode = pcode + ".jpg";
 

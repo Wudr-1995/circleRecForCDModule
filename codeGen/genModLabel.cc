@@ -76,7 +76,11 @@ int main(int argc, char** argv) {
 
 		putText(codeModule, "Module", Point(300, 50), FONT_HERSHEY_TRIPLEX, 1.5, Scalar::all(0), 4, 8, 0);
 
-		mid[11] = '_';
+		for (int i = 0; i < mid.size(); i ++) {
+			if (mid[i] == 47)
+				mid[i] = '_';
+		}
+		// mid[11] = '_';
 		mcode = path + "resModule/M" + mid;
 		mcode = mcode + ".jpg";
 
